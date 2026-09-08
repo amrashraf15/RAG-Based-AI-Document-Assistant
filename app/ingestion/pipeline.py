@@ -1,15 +1,17 @@
 import hashlib
 import json
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from app.core.config import ensure_directories, settings
-from app.core.exceptions import (
-    EmptyPDFError,
-    PDFSizeLimitError,
-)
+from app.core.exceptions import EmptyPDFError, PDFSizeLimitError
 from app.ingestion.cleaner import TextCleaner
+from app.ingestion.chunker import (
+    ChunkingConfig,
+    RecursiveTextChunker,
+)
 from app.ingestion.loader import PDFLoader
+from app.models.chunk import DocumentChunk
 from app.models.document import (
     DocumentMetadata,
     ProcessedDocument,
@@ -18,14 +20,28 @@ from app.models.document import (
 
 class DocumentIngestionPipeline:
     """
-    End-to-end Phase 1 document ingestion pipeline.
+    End-to-end document ingestion pipeline.
+
+    Phase 1:
+        PDF → pages → cleaned document
+
+    Phase 2:
+        cleaned document → chunks
     """
 
     def __init__(
         self,
         cleaner: Optional[TextCleaner] = None,
+        chunker: Optional[RecursiveTextChunker] = None,
     ):
         self.cleaner = cleaner or TextCleaner()
+
+        self.chunker = chunker or RecursiveTextChunker(
+            config=ChunkingConfig(
+                chunk_size=settings.chunk_size,
+                chunk_overlap=settings.chunk_overlap,
+            )
+        )
 
         ensure_directories()
 
@@ -34,28 +50,26 @@ class DocumentIngestionPipeline:
         file_path: Path,
     ) -> ProcessedDocument:
         """
-        Process one PDF document.
+        Phase 1 document processing.
 
-        Pipeline:
-
-            PDF
-             ↓
-            validate
-             ↓
-            extract
-             ↓
-            clean
-             ↓
-            metadata
-             ↓
-            ProcessedDocument
+        PDF
+        ↓
+        validation
+        ↓
+        extraction
+        ↓
+        cleaning
+        ↓
+        ProcessedDocument
         """
 
         file_path = Path(file_path)
 
         self._validate_file(file_path)
 
-        document_id = self._generate_document_id(file_path)
+        document_id = self._generate_document_id(
+            file_path
+        )
 
         source = str(file_path.resolve())
 
@@ -71,13 +85,15 @@ class DocumentIngestionPipeline:
         meaningful_pages = [
             page
             for page in pages
-            if not self.cleaner.is_empty(page.clean_text)
+            if not self.cleaner.is_empty(
+                page.clean_text
+            )
         ]
 
         if not meaningful_pages:
             raise EmptyPDFError(
-                f"No meaningful text could be extracted from: "
-                f"{file_path.name}"
+                f"No meaningful text could be extracted "
+                f"from: {file_path.name}"
             )
 
         extracted_character_count = sum(
@@ -95,7 +111,6 @@ class DocumentIngestionPipeline:
             pages=pages,
         )
 
-        # Add title to page metadata.
         updated_pages = []
 
         for page in pages:
@@ -120,8 +135,12 @@ class DocumentIngestionPipeline:
             source=source,
             title=title,
             page_count=len(pages),
-            extracted_character_count=extracted_character_count,
-            cleaned_character_count=cleaned_character_count,
+            extracted_character_count=(
+                extracted_character_count
+            ),
+            cleaned_character_count=(
+                cleaned_character_count
+            ),
         )
 
         document = ProcessedDocument(
@@ -137,10 +156,55 @@ class DocumentIngestionPipeline:
 
         return document
 
-    def _validate_file(self, file_path: Path) -> None:
+    def create_chunks(
+        self,
+        document: ProcessedDocument,
+    ) -> List[DocumentChunk]:
         """
-        Validate the input PDF.
+        Phase 2 chunking.
+
+        ProcessedDocument
+        ↓
+        DocumentChunk[]
         """
+
+        chunks = self.chunker.chunk_document(
+            document
+        )
+
+        self._save_chunks(
+            document=document,
+            chunks=chunks,
+        )
+
+        return chunks
+
+    def process_with_chunks(
+        self,
+        file_path: Path,
+    ) -> tuple[
+        ProcessedDocument,
+        List[DocumentChunk],
+    ]:
+        """
+        Run Phase 1 + Phase 2.
+
+        Returns:
+            (ProcessedDocument, chunks)
+        """
+
+        document = self.process(file_path)
+
+        chunks = self.create_chunks(
+            document
+        )
+
+        return document, chunks
+
+    def _validate_file(
+        self,
+        file_path: Path,
+    ) -> None:
 
         if not file_path.exists():
             raise FileNotFoundError(
@@ -152,7 +216,10 @@ class DocumentIngestionPipeline:
                 f"Input path is not a file: {file_path}"
             )
 
-        if file_path.suffix.lower() != ".pdf":
+        if (
+            file_path.suffix.lower()
+            != settings.allowed_file_extension
+        ):
             raise ValueError(
                 "Only PDF files are supported."
             )
@@ -161,8 +228,8 @@ class DocumentIngestionPipeline:
 
         if file_size > settings.max_pdf_size_bytes:
             raise PDFSizeLimitError(
-                f"PDF exceeds maximum allowed size of "
-                f"{settings.max_pdf_size_mb} MB."
+                f"PDF exceeds maximum allowed size "
+                f"of {settings.max_pdf_size_mb} MB."
             )
 
         if file_size == 0:
@@ -175,33 +242,26 @@ class DocumentIngestionPipeline:
         file_path: Path,
     ) -> str:
         """
-        Generate a deterministic document ID from file contents.
-
-        This means identical files receive the same ID.
+        Generate deterministic document ID from file contents.
         """
 
         hasher = hashlib.sha256()
 
         with file_path.open("rb") as file:
-            while chunk := file.read(1024 * 1024):
+            while chunk := file.read(
+                1024 * 1024
+            ):
                 hasher.update(chunk)
 
-        return f"doc_{hasher.hexdigest()[:16]}"
+        return (
+            f"doc_{hasher.hexdigest()[:16]}"
+        )
 
     def _extract_title(
         self,
         file_path: Path,
         pages,
     ) -> Optional[str]:
-        """
-        Attempt to determine a simple document title.
-
-        Current strategy:
-        1. Use PDF filename.
-        2. If first page has a short first line, prefer it.
-
-        This is intentionally simple for Phase 1.
-        """
 
         if pages:
             first_page_text = pages[0].clean_text
@@ -224,14 +284,6 @@ class DocumentIngestionPipeline:
         self,
         document: ProcessedDocument,
     ) -> Path:
-        """
-        Save processed document as JSON.
-
-        JSON is useful during development because it lets us
-        inspect exactly what the pipeline produced.
-
-        Later, this can be replaced or complemented by a database.
-        """
 
         output_path = (
             settings.processed_dir
@@ -242,8 +294,53 @@ class DocumentIngestionPipeline:
             "w",
             encoding="utf-8",
         ) as file:
+
             json.dump(
                 document.model_dump(mode="json"),
+                file,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        return output_path
+
+    def _save_chunks(
+        self,
+        document: ProcessedDocument,
+        chunks: List[DocumentChunk],
+    ) -> Path:
+        """
+        Save chunks separately from the original document.
+
+        This keeps Phase 1 output independent from Phase 2 output.
+        """
+
+        output_path = (
+            settings.processed_dir
+            / f"{document.document_id}_chunks.json"
+        )
+
+        payload = {
+            "document_id": document.document_id,
+            "filename": document.filename,
+            "chunk_size": self.chunker.config.chunk_size,
+            "chunk_overlap": (
+                self.chunker.config.chunk_overlap
+            ),
+            "chunk_count": len(chunks),
+            "chunks": [
+                chunk.model_dump(mode="json")
+                for chunk in chunks
+            ],
+        }
+
+        with output_path.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+
+            json.dump(
+                payload,
                 file,
                 indent=2,
                 ensure_ascii=False,

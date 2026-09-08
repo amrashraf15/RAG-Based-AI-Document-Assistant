@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # PDF settings
     allowed_file_extension: str = ".pdf"
 
+    # Chunking
+    chunk_size: int = 500
+    chunk_overlap: int = 100
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

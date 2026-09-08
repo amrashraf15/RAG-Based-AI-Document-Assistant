@@ -8,7 +8,10 @@ from app.ingestion.pipeline import DocumentIngestionPipeline
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Process a PDF document for the RAG pipeline."
+        description=(
+            "Process and chunk a PDF document "
+            "for the RAG pipeline."
+        )
     )
 
     parser.add_argument(
@@ -22,7 +25,11 @@ def main() -> int:
     pipeline = DocumentIngestionPipeline()
 
     try:
-        document = pipeline.process(args.pdf)
+        document, chunks = (
+            pipeline.process_with_chunks(
+                args.pdf
+            )
+        )
 
     except DocumentProcessingError as exc:
         print(
@@ -45,23 +52,77 @@ def main() -> int:
         )
         return 1
 
+    total_tokens = sum(
+        chunk.token_count
+        for chunk in chunks
+    )
+
+    average_tokens = (
+        total_tokens / len(chunks)
+        if chunks
+        else 0
+    )
+
     print()
     print("=" * 60)
     print("Document processed successfully")
     print("=" * 60)
     print()
+
     print(f"Document ID: {document.document_id}")
     print(f"Filename:    {document.filename}")
     print(f"Pages:       {document.page_count}")
+
     print(
-        f"Characters:  {document.metadata.cleaned_character_count:,}"
+        f"Characters:  "
+        f"{document.metadata.cleaned_character_count:,}"
     )
-    print(f"Source:      {document.source}")
+
+    print(f"Chunks:      {len(chunks):,}")
+
+    print(
+        f"Avg tokens:  "
+        f"{average_tokens:.1f}"
+    )
+
     print()
+
     print(
-        f"Processed document saved to: "
-        f"data/processed/{document.document_id}.json"
+        "Chunk configuration:"
     )
+
+    print(
+        f"  Size:      "
+        f"{pipeline.chunker.config.chunk_size} tokens"
+    )
+
+    print(
+        f"  Overlap:   "
+        f"{pipeline.chunker.config.chunk_overlap} tokens"
+    )
+
+    print()
+
+    print(
+        "Processed document:"
+    )
+
+    print(
+        f"  data/processed/"
+        f"{document.document_id}.json"
+    )
+
+    print()
+
+    print(
+        "Chunks:"
+    )
+
+    print(
+        f"  data/processed/"
+        f"{document.document_id}_chunks.json"
+    )
+
     print()
 
     return 0
