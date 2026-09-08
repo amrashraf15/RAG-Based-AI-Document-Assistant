@@ -4,7 +4,6 @@
 
 **Project Type:** AI Engineering / NLP / Information Retrieval / RAG
 **Primary Language:** Python
-**Target Level:** Advanced undergraduate / Master's preparation
 **Development Period:** September 2026 → 2027
 **Primary Goal:** Build a production-quality Retrieval-Augmented Generation system that allows users to upload documents, ask questions, retrieve relevant evidence, and receive grounded answers with source citations.
 
