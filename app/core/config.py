@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from functools import lru_cache
 from pathlib import Path
 
@@ -5,62 +7,114 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # ------------------------------------------------------------------
+    # Application
+    # ------------------------------------------------------------------
+
     app_name: str = "RAG Document Assistant"
     app_version: str = "0.1.0"
+
+    # ------------------------------------------------------------------
+    # PDF processing
+    # ------------------------------------------------------------------
 
     max_pdf_size_mb: int = 50
 
     upload_dir: Path = Path("data/uploads")
     processed_dir: Path = Path("data/processed")
+
     allowed_file_extension: str = ".pdf"
 
-    chunk_size: int = 500
-    chunk_overlap: int = 100
+    # ------------------------------------------------------------------
+    # Chunking
+    # ------------------------------------------------------------------
 
+    chunk_size: int = 300
+    chunk_overlap: int = 50
+
+    # ------------------------------------------------------------------
     # Embeddings
+    # ------------------------------------------------------------------
+
     embedding_provider: str = "huggingface"
+
     embedding_model: str = "BAAI/bge-small-en-v1.5"
+
     embedding_device: str | None = None
+
     embedding_batch_size: int = 32
+
     normalize_embeddings: bool = True
 
+    # ------------------------------------------------------------------
     # Qdrant
+    # ------------------------------------------------------------------
+
     qdrant_collection_name: str = "document_chunks"
+
     qdrant_path: Path = Path("data/qdrant")
+
     qdrant_url: str | None = None
+
     qdrant_api_key: str | None = None
+
     qdrant_timeout: float = 30.0
 
-    # Reranker
-    reranker_provider: str = "sentence_transformers"
-
-    reranker_model: str = (
-        "cross-encoder/ms-marco-MiniLM-L-6-v2"
-    )
-
-    reranker_device: str | None = None
-    reranker_batch_size: int = 16
-    reranker_candidate_k: int = 20
-
+    # ------------------------------------------------------------------
     # LLM
+    # ------------------------------------------------------------------
+
     llm_provider: str = "ollama"
+
     llm_model: str = "llama3.2:3b"
 
-    # OpenAI
-    openai_api_key: str | None = None
-
-    # Ollama
-    ollama_host: str = "http://localhost:11434"
-
-    # Generation
     llm_temperature: float = 0.0
+
     llm_max_output_tokens: int = 1000
 
+    ollama_host: str = "http://localhost:11434"
+
+    # ------------------------------------------------------------------
+    # Retrieval
+    # ------------------------------------------------------------------
+
     retrieval_top_k: int = 5
+
+    retrieval_candidate_k: int = 20
+
+    dense_weight: float = 0.5
+
+    lexical_weight: float = 0.5
+
+    rrf_k: int = 60
+
+    # ------------------------------------------------------------------
+    # Generation
+    # ------------------------------------------------------------------
 
     generation_context_max_chars: int = 12000
 
     require_citations: bool = True
+
+    # ------------------------------------------------------------------
+    # API
+    # ------------------------------------------------------------------
+
+    api_title: str = "RAG Document Assistant API"
+
+    api_description: str = (
+        "REST API for the RAG-Based AI Document Assistant."
+    )
+
+    api_version: str = "1.0.0"
+
+    api_host: str = "127.0.0.1"
+
+    api_port: int = 8000
+
+    api_max_search_results: int = 20
+
+    api_max_candidate_results: int = 50
 
     model_config = SettingsConfigDict(
         env_file=".env",
