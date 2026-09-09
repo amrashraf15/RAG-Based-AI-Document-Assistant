@@ -1,324 +1,305 @@
-# 🧠 RAG-Based AI Document Assistant
+🧠 RAG-Based AI Document Assistant
 
-## Intelligent PDF Knowledge Assistant
+A production-oriented Retrieval-Augmented Generation (RAG) system for grounded question answering over user-uploaded documents, with semantic retrieval, source citations, evaluation, and deployment support.
 
-**Project Type:** AI Engineering / NLP / Information Retrieval / RAG
-**Primary Language:** Python
-**Development Period:** September 2026 → 2027
-**Primary Goal:** Build a production-quality Retrieval-Augmented Generation system that allows users to upload documents, ask questions, retrieve relevant evidence, and receive grounded answers with source citations.
 
----
 
-# 1. Project Vision
 
-The goal is **not** to build another basic "Chat with PDF" application.
 
-The goal is to build a complete **Retrieval-Augmented Generation (RAG) system** that demonstrates understanding of:
 
-* Natural Language Processing
-* Information Retrieval
-* Vector databases
-* Embeddings
-* Semantic search
-* Large Language Models
-* Prompt engineering
-* Retrieval evaluation
-* Generation evaluation
-* Hallucination detection
-* API design
-* Software architecture
-* Docker deployment
-* Experimental methodology
 
-The final system should answer questions using information contained in uploaded documents and clearly identify where each answer came from.
 
----
+Overview
 
-# 2. Final Product
+The RAG-Based AI Document Assistant is an AI engineering project designed to go beyond a basic "Chat with PDF" application.
 
-The final application should work approximately like this:
+The system combines Natural Language Processing, Information Retrieval, embeddings, vector databases, Large Language Models, evaluation, and production software engineering to answer questions using evidence retrieved from uploaded documents.
 
-```text
-                    ┌──────────────────────┐
-                    │       User           │
-                    │                      │
-                    │ Upload PDF / Ask Q   │
-                    └──────────┬───────────┘
+The core objective is simple:
+
+Retrieve the right evidence, generate a grounded answer, and show the user where the answer came from.
+
+The project is being developed progressively from a working MVP into a stronger RAG system and finally into a research-oriented, production-ready application.
+
+Why This Project?
+
+Many document QA systems focus primarily on connecting an LLM to a PDF.
+
+This project focuses on understanding and evaluating the complete RAG pipeline:
+
+Document ingestion
+
+PDF text extraction
+
+Text cleaning
+
+Chunking
+
+Embedding generation
+
+Vector search
+
+Retrieval configuration
+
+Reranking
+
+Context construction
+
+LLM generation
+
+Source citations
+
+Hallucination mitigation
+
+Quantitative evaluation
+
+Error analysis
+
+API design
+
+Testing
+
+Docker deployment
+
+This makes the project both an AI engineering portfolio project and a foundation for research into RAG retrieval and generation quality.
+
+Architecture
+
+                              USER
                                │
-                               ▼
-                    ┌──────────────────────┐
-                    │      FastAPI         │
-                    │       Backend        │
-                    └──────────┬───────────┘
-                               │
-                ┌──────────────┴──────────────┐
-                │                             │
-                ▼                             ▼
-       ┌────────────────┐          ┌─────────────────┐
-       │ Document       │          │ Question        │
-       │ Processing     │          │ Processing      │
-       └───────┬────────┘          └────────┬────────┘
-               │                            │
-               ▼                            ▼
-       ┌────────────────┐          ┌─────────────────┐
-       │ Text           │          │ Query           │
-       │ Extraction     │          │ Embedding       │
-       └───────┬────────┘          └────────┬────────┘
-               │                            │
-               ▼                            ▼
-       ┌────────────────┐          ┌─────────────────┐
-       │ Chunking       │          │ Vector Search   │
-       └───────┬────────┘          └────────┬────────┘
-               │                            │
-               ▼                            │
-       ┌────────────────┐                    │
-       │ Embeddings     │                    │
-       └───────┬────────┘                    │
-               │                            │
-               ▼                            ▼
-       ┌────────────────────────────────────────────┐
-       │              Vector Database               │
-       │                 Qdrant                     │
-       └──────────────────────┬─────────────────────┘
-                              │
-                              ▼
-                   ┌────────────────────┐
-                   │ Relevant Chunks    │
-                   │ + Metadata         │
-                   └─────────┬──────────┘
+                 ┌─────────────┴─────────────┐
+                 │                           │
+            Upload PDFs                 Ask Question
+                 │                           │
+                 ▼                           ▼
+        Document Pipeline              Query Pipeline
+                 │                           │
+           PDF Extraction               Query Embedding
+                 │                           │
+             Cleaning                       │
+                 │                           │
+             Chunking                       │
+                 │                           │
+            Embeddings                      │
+                 │                           │
+                 ▼                           ▼
+          ┌──────────────────────────────────────┐
+          │                QDRANT                 │
+          │                                      │
+          │     Vectors + Metadata + Text        │
+          └──────────────────┬───────────────────┘
                              │
                              ▼
-                   ┌────────────────────┐
-                   │       LLM          │
-                   │ Context + Question │
-                   └─────────┬──────────┘
+                         Retrieval
                              │
                              ▼
-                   ┌────────────────────┐
-                   │ Answer + Citations │
-                   └────────────────────┘
-```
+                         Reranking
+                             │
+                             ▼
+                       Context Builder
+                             │
+                             ▼
+                            LLM
+                             │
+                    ┌────────┴────────┐
+                    │                 │
+                    ▼                 ▼
+                  Answer           Sources
+                    │                 │
+                    └────────┬────────┘
+                             ▼
+                       Final Response
 
----
+Core Features
 
-# 3. Core Features
+Document Processing
 
-## MVP
+PDF upload and validation
 
-The first working version must support:
+PDF text extraction with PyMuPDF
 
-* PDF upload
-* PDF text extraction
-* Text cleaning
-* Document chunking
-* Embedding generation
-* Vector storage
-* Similarity search
-* Question answering
-* LLM integration
-* Source citations
+Text cleaning and normalization
 
----
+Page-level metadata preservation
 
-# 4. Advanced Features
+Document IDs
 
-The final system should additionally support:
+Processing status
 
-### Document management
+Multiple-document support
 
-* Multiple PDFs
-* Document IDs
-* Metadata
-* Document deletion
-* Duplicate detection
-* Processing status
+Document deletion
 
-### Retrieval
+Duplicate detection
 
-* Semantic search
-* Configurable `top_k`
-* Similarity threshold
-* Metadata filtering
-* Hybrid retrieval
-* Reranking
+Retrieval
 
-### Generation
+Semantic vector search
 
-* Context-aware prompts
-* Citation generation
-* Conversation history
-* "I don't know" behavior
-* Hallucination mitigation
+Configurable top_k
 
-### Evaluation
+Similarity thresholds
 
-* Retrieval metrics
-* Generation metrics
-* Recall@K
-* Precision@K
-* MRR
-* Faithfulness
-* Answer relevance
-* Citation correctness
+Metadata filtering
 
-### Engineering
+Dense retrieval
 
-* REST API
-* Unit tests
-* Integration tests
-* Logging
-* Configuration management
-* Docker
-* Docker Compose
-* CI/CD
-* API documentation
+Reranking
 
----
+Hybrid retrieval experiments
 
-# 5. Recommended Technology Stack
+Generation
 
-## Backend
+Context-aware prompting
 
-Python
+Context-only answering
+
+Source citations
+
+Conversation history
+
+"Insufficient evidence" behavior
+
+Hallucination mitigation
+
+LLM abstraction layer
+
+Evaluation & Research
+
+The system is designed to support quantitative evaluation using:
+
+Recall@K
+
+Precision@K
+
+MRR
+
+Hit Rate
+
+Faithfulness
+
+Answer relevance
+
+Citation correctness
+
+Context relevance
+
+Hallucination tests
+
+Error analysis
+
+Ablation/controlled experiments
+
+Technology Stack
+
+Layer
+
+Technology
+
+Language
+
+Python 3.11+
+
+API
 
 FastAPI
 
-Pydantic
+Validation / Configuration
 
-SQLAlchemy
+Pydantic / Pydantic Settings
 
----
+PDF Processing
 
-## Document Processing
-
-Start simple:
-
-```text
 PyMuPDF
-```
 
-Later experiment with:
+Embeddings
 
-```text
-Unstructured
-pypdf
-```
+Hugging Face Sentence Transformers
 
----
+Initial Embedding Model
 
-## Text Chunking
-
-Initial implementation:
-
-```text
-Recursive Character Text Splitter
-```
-
-Then experiment with:
-
-* fixed-size chunks
-* sentence-based chunks
-* paragraph-based chunks
-* semantic chunking
-
----
-
-## Embeddings
-
-Start with a Hugging Face sentence-transformer model.
-
-Example:
-
-```text
 BAAI/bge-small-en-v1.5
-```
 
-Later compare against:
+Vector Database
 
-```text
-BAAI/bge-base-en-v1.5
-```
-
-and an API-based embedding model if desired.
-
----
-
-## Vector Database
-
-Recommended:
-
-```text
 Qdrant
-```
 
-Alternatives:
+LLM
 
-```text
-FAISS
-Chroma
-```
+API-based LLM through an abstraction layer
 
-Use Qdrant for the final system because it gives the project a more production-oriented architecture.
+Initial Frontend
 
----
-
-## LLM
-
-Use an API-based LLM initially.
-
-Keep the LLM behind an abstraction layer so the system can later support:
-
-```text
-OpenAI
-Anthropic
-Google
-Ollama
-Hugging Face
-```
-
----
-
-## API
-
-```text
-FastAPI
-```
-
----
-
-## Frontend
-
-Start with:
-
-```text
 Streamlit
-```
 
-Then optionally build:
+Optional Final Frontend
 
-```text
 React + TypeScript
-```
 
-for the final version.
+Database / Persistence
 
----
+SQLAlchemy-compatible architecture
 
-## Infrastructure
+Testing
 
-```text
+Unit + Integration Tests
+
+Containerization
+
 Docker
+
+Orchestration
+
 Docker Compose
+
+CI/CD
+
 GitHub Actions
-```
 
----
+End-to-End RAG Pipeline
 
-# 6. Project Architecture
+PDF
+ │
+ ▼
+Text Extraction
+ │
+ ▼
+Text Cleaning
+ │
+ ▼
+Chunking
+ │
+ ▼
+Embedding Generation
+ │
+ ▼
+Vector Storage
+ │
+ ▼
+User Question
+ │
+ ▼
+Query Embedding
+ │
+ ▼
+Vector Retrieval
+ │
+ ▼
+Optional Reranking
+ │
+ ▼
+Context Construction
+ │
+ ▼
+LLM
+ │
+ ▼
+Grounded Answer + Citations
 
-Recommended final architecture:
+Project Structure
 
-```text
+The target architecture is organized around clear system boundaries:
+
 rag-document-assistant/
 │
 ├── app/
@@ -328,7 +309,6 @@ rag-document-assistant/
 │   │   │   ├── chat.py
 │   │   │   ├── search.py
 │   │   │   └── health.py
-│   │   │
 │   │   └── dependencies.py
 │   │
 │   ├── core/
@@ -386,11 +366,8 @@ rag-document-assistant/
 │   └── benchmark.py
 │
 ├── frontend/
-│
 ├── docker/
-│
 ├── docs/
-│
 ├── notebooks/
 │
 ├── .env.example
@@ -398,1216 +375,68 @@ rag-document-assistant/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-├── README.md
-└── PROJECT_PLAN.md
-```
+└── README.md
 
----
+API
 
-# 7. Development Phases
+The production API is designed around the following endpoints:
 
-The project will be developed in 10 phases.
+Method
 
-```text
-Phase 0  → Planning & Environment
-Phase 1  → PDF Processing
-Phase 2  → Chunking Pipeline
-Phase 3  → Embeddings
-Phase 4  → Vector Database
-Phase 5  → Retrieval
-Phase 6  → RAG Generation
-Phase 7  → Citations & Conversations
-Phase 8  → Evaluation & Research
-Phase 9  → Production API & UI
-Phase 10 → Docker, Deployment & Portfolio
-```
+Endpoint
 
----
+Purpose
 
-# PHASE 0 — Planning & Environment
+POST
 
-## Objective
+/documents/upload
 
-Prepare the development environment and understand the architecture before writing the RAG system.
+Upload and process a PDF
 
----
+GET
 
-## Tasks
+/documents
 
-### 0.1 Install
+List uploaded documents
 
-Install:
+GET
 
-* Python 3.11+
-* Git
-* VS Code
-* Docker Desktop
-* Postman or Insomnia
+/documents/{document_id}
 
----
+Retrieve document information
 
-## 0.2 Create repository
+DELETE
 
-```bash
-mkdir rag-document-assistant
+/documents/{document_id}
 
-cd rag-document-assistant
+Delete a document
 
-git init
-```
+POST
 
----
+/search
 
-## 0.3 Create virtual environment
+Search indexed document content
 
-Windows:
+POST
 
-```bash
-python -m venv .venv
+/chat
 
-.venv\Scripts\activate
-```
+Ask a grounded question
 
-Linux/macOS:
+GET
 
-```bash
-python3 -m venv .venv
+/conversations/{conversation_id}
 
-source .venv/bin/activate
-```
+Retrieve conversation history
 
----
+GET
 
-## 0.4 Create initial dependencies
+/health
 
-```bash
-pip install fastapi uvicorn
-pip install pymupdf
-pip install sentence-transformers
-pip install qdrant-client
-pip install pydantic-settings
-pip install python-multipart
-pip install python-dotenv
-```
+Service health check
 
-Later add the LLM SDK and LangChain/LlamaIndex components only when needed.
+Example response:
 
----
-
-## 0.5 Create first Git commit
-
-```bash
-git add .
-
-git commit -m "chore: initialize project"
-```
-
----
-
-## Deliverables
-
-By the end of Phase 0:
-
-```text
-✓ Repository
-✓ Python environment
-✓ Dependency management
-✓ Project structure
-✓ README
-✓ Git workflow
-✓ Architecture diagram
-```
-
----
-
-# PHASE 1 — PDF DOCUMENT PROCESSING
-
-## Objective
-
-Build the ingestion pipeline.
-
-Input:
-
-```text
-PDF
-```
-
-Output:
-
-```text
-Document
-    ↓
-Pages
-    ↓
-Clean text
-    ↓
-Metadata
-```
-
----
-
-# 1.1 PDF extraction
-
-Use PyMuPDF.
-
-The system should extract:
-
-```text
-document_id
-filename
-page_number
-text
-```
-
-Example internal representation:
-
-```python
-{
-    "document_id": "doc_123",
-    "page": 4,
-    "text": "Machine learning is..."
-}
-```
-
----
-
-# 1.2 Metadata
-
-Every extracted page should maintain metadata:
-
-```text
-document_id
-filename
-page_number
-title
-source
-```
-
-This becomes extremely important later for citations.
-
----
-
-# 1.3 Text cleaning
-
-Implement:
-
-* whitespace normalization
-* repeated newline removal
-* header/footer handling
-* empty page detection
-* malformed character cleanup
-
-Do not aggressively modify the text.
-
-The original document should remain recoverable.
-
----
-
-# 1.4 Document ingestion pipeline
-
-Build:
-
-```text
-upload
-   ↓
-validate PDF
-   ↓
-extract pages
-   ↓
-clean text
-   ↓
-store metadata
-   ↓
-return document ID
-```
-
----
-
-## Deliverable
-
-A script such as:
-
-```bash
-python scripts/ingest.py example.pdf
-```
-
-should produce:
-
-```text
-Document processed successfully
-
-Document ID: abc123
-Pages: 42
-Characters: 183,421
-```
-
----
-
-# PHASE 2 — CHUNKING
-
-## Objective
-
-Convert documents into retrieval-friendly pieces.
-
-```text
-Document
-    ↓
-Pages
-    ↓
-Chunks
-```
-
----
-
-# 2.1 Why chunking matters
-
-LLMs and vector databases should not receive an entire 200-page PDF for every question.
-
-Instead:
-
-```text
-PDF
- ↓
-1000 chunks
- ↓
-retrieve 5 relevant chunks
- ↓
-send only those chunks to LLM
-```
-
----
-
-# 2.2 Baseline chunking
-
-Start with:
-
-```text
-chunk_size = 500–1000 tokens
-overlap = 50–150 tokens
-```
-
-Do not treat these values as final.
-
-They become experimental variables later.
-
----
-
-# 2.3 Store chunk metadata
-
-Each chunk should contain:
-
-```text
-chunk_id
-document_id
-page_number
-chunk_index
-text
-```
-
-Example:
-
-```json
-{
-  "chunk_id": "chunk_982",
-  "document_id": "doc_123",
-  "page_number": 15,
-  "chunk_index": 31,
-  "text": "Gradient descent is..."
-}
-```
-
----
-
-# 2.4 Chunking experiments
-
-Later compare:
-
-```text
-Experiment A
-chunk = 300 tokens
-
-Experiment B
-chunk = 500 tokens
-
-Experiment C
-chunk = 800 tokens
-
-Experiment D
-chunk = 1200 tokens
-```
-
-Measure retrieval performance.
-
-This is where the project starts becoming research-oriented.
-
----
-
-## Deliverable
-
-A reusable:
-
-```text
-Chunker
-```
-
-with configurable parameters.
-
----
-
-# PHASE 3 — EMBEDDINGS
-
-## Objective
-
-Convert text into numerical vectors.
-
-Concept:
-
-```text
-Text
- ↓
-Embedding Model
- ↓
-Vector
-```
-
-Example:
-
-```text
-"Machine learning uses data"
-              ↓
-[0.012, -0.238, 0.451, ...]
-```
-
----
-
-# 3.1 Understand embeddings
-
-Study:
-
-* semantic similarity
-* vector representations
-* cosine similarity
-* dot product
-* Euclidean distance
-* embedding dimensions
-
-You should understand these mathematically.
-
----
-
-# 3.2 Implement embedding service
-
-Create an abstraction:
-
-```python
-class EmbeddingModel:
-    def embed_documents(self, texts):
-        ...
-
-    def embed_query(self, query):
-        ...
-```
-
-This allows you to change models later without rewriting the system.
-
----
-
-# 3.3 Initial model
-
-Start with a lightweight Hugging Face embedding model.
-
-For example:
-
-```text
-BAAI/bge-small-en-v1.5
-```
-
----
-
-# 3.4 Embedding experiments
-
-Compare models.
-
-Example:
-
-```text
-Model A → BGE Small
-Model B → BGE Base
-Model C → API embedding model
-```
-
-Record:
-
-```text
-embedding dimension
-latency
-memory usage
-retrieval Recall@K
-MRR
-cost
-```
-
----
-
-# PHASE 4 — VECTOR DATABASE
-
-## Objective
-
-Store and search embeddings.
-
-Recommended:
-
-```text
-Qdrant
-```
-
-Architecture:
-
-```text
-Chunk
- ↓
-Embedding
- ↓
-Qdrant
-```
-
----
-
-# 4.1 Start Qdrant
-
-Use Docker:
-
-```bash
-docker run -p 6333:6333 qdrant/qdrant
-```
-
-Later use Docker Compose.
-
----
-
-# 4.2 Collection
-
-Create a collection:
-
-```text
-documents
-```
-
-Each point contains:
-
-```text
-vector
-payload
-```
-
-Payload:
-
-```json
-{
-    "document_id": "doc_123",
-    "filename": "machine_learning.pdf",
-    "page": 15,
-    "chunk_id": "chunk_31",
-    "text": "..."
-}
-```
-
----
-
-# 4.3 Similarity search
-
-Input:
-
-```text
-"What is gradient descent?"
-```
-
-Convert question into vector.
-
-Then:
-
-```text
-query vector
-      ↓
-Qdrant
-      ↓
-Top K chunks
-```
-
----
-
-# PHASE 5 — RETRIEVAL ENGINE
-
-## Objective
-
-Build a proper information retrieval system.
-
-This phase is extremely important for your Master's applications.
-
----
-
-# 5.1 Baseline retrieval
-
-Implement:
-
-```text
-query
- ↓
-embedding
- ↓
-vector search
- ↓
-top_k results
-```
-
----
-
-# 5.2 Retrieval parameters
-
-Make configurable:
-
-```text
-top_k
-score_threshold
-collection
-filters
-```
-
-Example:
-
-```text
-top_k = 5
-```
-
----
-
-# 5.3 Retrieval result
-
-Return:
-
-```json
-{
-    "chunk_id": "chunk_42",
-    "score": 0.87,
-    "text": "...",
-    "document": "ml.pdf",
-    "page": 18
-}
-```
-
----
-
-# 5.4 Retrieval evaluation
-
-Create a dataset:
-
-```text
-Question
-Expected document
-Expected page/chunk
-```
-
-Example:
-
-```json
-{
-  "question": "What is gradient descent?",
-  "relevant_chunks": [
-      "chunk_42",
-      "chunk_43"
-  ]
-}
-```
-
----
-
-# 5.5 Metrics
-
-Implement:
-
-### Recall@K
-
-Measures whether relevant information appears in the top K results.
-
-```text
-Recall@1
-Recall@3
-Recall@5
-Recall@10
-```
-
----
-
-### Precision@K
-
-Measures how many retrieved results are relevant.
-
----
-
-### MRR
-
-Mean Reciprocal Rank.
-
-Useful for measuring where the first relevant result appears.
-
----
-
-### Hit Rate
-
-Measures whether at least one relevant result appears.
-
----
-
-# 5.6 Retrieval experiment
-
-Run experiments such as:
-
-```text
-Experiment 1
-chunk = 500
-top_k = 3
-
-Experiment 2
-chunk = 500
-top_k = 5
-
-Experiment 3
-chunk = 1000
-top_k = 5
-
-Experiment 4
-chunk = 1000
-top_k = 10
-```
-
-Record results in:
-
-```text
-evaluation/results/
-```
-
----
-
-# PHASE 6 — RAG GENERATION
-
-## Objective
-
-Connect retrieval to an LLM.
-
-Architecture:
-
-```text
-Question
-   ↓
-Retriever
-   ↓
-Relevant chunks
-   ↓
-Prompt construction
-   ↓
-LLM
-   ↓
-Answer
-```
-
----
-
-# 6.1 Context construction
-
-Example:
-
-```text
-SYSTEM:
-
-You are a document question-answering assistant.
-
-Answer the user's question using only the supplied context.
-
-If the context does not contain enough information,
-say that you do not have enough information.
-
-Always cite the sources used.
-```
-
-Then:
-
-```text
-CONTEXT:
-
-[Source 1]
-Document: ML.pdf
-Page: 12
-
-...
-
-[Source 2]
-Document: ML.pdf
-Page: 15
-
-...
-```
-
-Then:
-
-```text
-QUESTION:
-
-What is gradient descent?
-```
-
----
-
-# 6.2 Grounded answering
-
-The model must not answer based purely on its general knowledge.
-
-The target behavior is:
-
-```text
-Context contains answer
-        ↓
-Answer
-
-Context doesn't contain answer
-        ↓
-"I couldn't find sufficient information in the documents."
-```
-
----
-
-# 6.3 Hallucination protection
-
-Implement:
-
-* strict system prompt
-* context-only answering
-* relevance threshold
-* "insufficient evidence" response
-* source citation requirement
-
----
-
-# 6.4 LLM abstraction
-
-Create:
-
-```python
-class LLM:
-    def generate(self, prompt):
-        ...
-```
-
-Then implementations can include:
-
-```text
-OpenAI
-Ollama
-Hugging Face
-Anthropic
-```
-
----
-
-# PHASE 7 — CITATIONS + CONVERSATION MEMORY
-
-## Objective
-
-Make the assistant genuinely useful.
-
----
-
-# 7.1 Source citations
-
-Every answer should contain citations.
-
-Example:
-
-```text
-Gradient descent is an optimization algorithm that
-iteratively updates model parameters to minimize a
-loss function.
-
-[Source: Machine Learning.pdf, Page 15]
-```
-
----
-
-# 7.2 Citation metadata
-
-Each source should contain:
-
-```text
-document
-page
-chunk
-similarity score
-```
-
----
-
-# 7.3 Multiple documents
-
-The user should be able to upload:
-
-```text
-paper1.pdf
-paper2.pdf
-thesis.pdf
-lecture_notes.pdf
-```
-
-Then ask:
-
-```text
-Compare the approaches described in the papers.
-```
-
----
-
-# 7.4 Conversation history
-
-Support:
-
-```text
-User:
-What is gradient descent?
-
-Assistant:
-...
-
-User:
-What are its limitations?
-
-Assistant:
-...
-```
-
-The second question should understand the conversation context.
-
----
-
-# 7.5 Conversation architecture
-
-```text
-Conversation
-   │
-   ├── Message
-   ├── Message
-   ├── Message
-   │
-   └── Retrieved Context
-```
-
----
-
-# PHASE 8 — EVALUATION + RESEARCH
-
-## Objective
-
-This is the phase that transforms the project from an application into a serious academic/engineering project.
-
----
-
-# 8.1 Create evaluation dataset
-
-Create approximately:
-
-```text
-50–100 questions
-```
-
-Initially.
-
-Questions should cover:
-
-* factual questions
-* multi-hop questions
-* comparison questions
-* definition questions
-* numerical questions
-* questions with no answer in documents
-* ambiguous questions
-
----
-
-# 8.2 Ground-truth data
-
-Each question should have:
-
-```text
-question
-expected answer
-relevant document
-relevant page
-relevant chunk
-```
-
----
-
-# 8.3 Retrieval evaluation
-
-Measure:
-
-```text
-Recall@1
-Recall@3
-Recall@5
-Recall@10
-
-Precision@K
-
-MRR
-
-Hit Rate
-```
-
----
-
-# 8.4 Generation evaluation
-
-Measure:
-
-### Faithfulness
-
-Does the answer actually follow from the retrieved context?
-
----
-
-### Answer relevance
-
-Does the answer address the question?
-
----
-
-### Citation correctness
-
-Do citations actually support the claims?
-
----
-
-### Context relevance
-
-Did the retriever provide useful information?
-
----
-
-# 8.5 Hallucination evaluation
-
-Create questions where the answer does not exist.
-
-Example:
-
-```text
-Document:
-Information about neural networks.
-
-Question:
-What is the population of Mars?
-```
-
-Expected:
-
-```text
-I cannot find this information in the provided documents.
-```
-
-The system should not invent an answer.
-
----
-
-# 8.6 Major research experiments
-
-This is where you should spend significant time.
-
-## Experiment 1 — Chunk size
-
-Compare:
-
-```text
-300
-500
-800
-1000
-1500 tokens
-```
-
-Measure:
-
-```text
-Recall@5
-MRR
-Answer quality
-Latency
-```
-
----
-
-## Experiment 2 — Chunk overlap
-
-Compare:
-
-```text
-0%
-10%
-20%
-```
-
----
-
-## Experiment 3 — Embedding models
-
-Compare:
-
-```text
-BGE-small
-BGE-base
-API embedding
-```
-
----
-
-## Experiment 4 — Top K
-
-Compare:
-
-```text
-K = 1
-K = 3
-K = 5
-K = 10
-```
-
----
-
-## Experiment 5 — Reranking
-
-Baseline:
-
-```text
-Vector search
-```
-
-Improved:
-
-```text
-Vector search
-      ↓
-Reranker
-      ↓
-Top results
-```
-
-Compare the two approaches.
-
----
-
-## Experiment 6 — Hybrid retrieval
-
-Compare:
-
-```text
-Dense retrieval
-```
-
-against:
-
-```text
-Dense + keyword retrieval
-```
-
----
-
-# 8.7 Research question
-
-Your project can eventually investigate:
-
-> **How do chunking strategies, embedding models, and retrieval configurations affect the accuracy and faithfulness of Retrieval-Augmented Generation systems for technical documents?**
-
-This is a legitimate research-oriented question.
-
----
-
-# PHASE 9 — PRODUCTION API + FRONTEND
-
-## Objective
-
-Turn the research prototype into a real application.
-
----
-
-# 9.1 FastAPI endpoints
-
-Implement:
-
-```http
-POST /documents/upload
-```
-
-Upload PDF.
-
----
-
-```http
-GET /documents
-```
-
-List documents.
-
----
-
-```http
-GET /documents/{document_id}
-```
-
-Get document information.
-
----
-
-```http
-DELETE /documents/{document_id}
-```
-
-Delete document.
-
----
-
-```http
-POST /search
-```
-
-Search documents.
-
----
-
-```http
-POST /chat
-```
-
-Ask a question.
-
----
-
-```http
-GET /conversations/{conversation_id}
-```
-
-Get conversation history.
-
----
-
-```http
-GET /health
-```
-
-Health check.
-
----
-
-# 9.2 API response
-
-Example:
-
-```json
 {
   "answer": "Gradient descent is...",
   "sources": [
@@ -1619,358 +448,419 @@ Example:
     }
   ]
 }
-```
 
----
+Grounded Generation
 
-# 9.3 Frontend
+The assistant is designed to answer from retrieved document context rather than relying blindly on the LLM's general knowledge.
 
-Initial frontend:
+Conceptually:
 
-```text
-Streamlit
-```
+Relevant evidence exists
+        │
+        ▼
+   Generate answer
+        │
+        ▼
+  Return citations
 
-Interface:
 
-```text
-┌─────────────────────────────────────┐
-│       Intelligent Document AI       │
-├─────────────────────────────────────┤
-│                                     │
-│ Upload Documents                    │
-│ [ Upload PDF ]                      │
-│                                     │
-│ Documents                           │
-│ ✓ ML.pdf                            │
-│ ✓ NLP.pdf                           │
-│ ✓ Research.pdf                      │
-│                                     │
-├─────────────────────────────────────┤
-│ Chat                                │
-│                                     │
-│ You: What is gradient descent?      │
-│                                     │
-│ AI: Gradient descent is...          │
-│                                     │
-│ Sources:                            │
-│ ML.pdf — Page 15                    │
-│                                     │
-│ [ Ask a question... ]               │
-└─────────────────────────────────────┘
-```
+Insufficient evidence
+        │
+        ▼
+Do not fabricate an answer
+        │
+        ▼
+Return an insufficient-evidence response
 
----
+This behavior is reinforced through:
 
-# PHASE 10 — DOCKER + DEPLOYMENT + PORTFOLIO
+Context-only prompting
 
-## Objective
+Retrieval score thresholds
 
-Deploy the complete system professionally.
+Citation requirements
 
----
+Explicit insufficient-evidence handling
 
-# 10.1 Docker services
+Retrieval evaluation
 
-Final architecture:
+Hallucination testing
 
-```text
+Research & Experiments
+
+A major objective is to make the system measurable rather than relying only on subjective "it seems to work" evaluation.
+
+Experiment 1 — Chunk Size
+
+Compare:
+
+300
+500
+800
+1000
+1500 tokens
+
+Measure:
+
+Recall@5
+
+MRR
+
+Answer quality
+
+Latency
+
+Experiment 2 — Chunk Overlap
+
+Compare:
+
+0%
+10%
+20%
+
+Experiment 3 — Embedding Models
+
+Compare:
+
+BGE-small
+BGE-base
+API-based embedding model
+
+Track:
+
+Embedding dimension
+
+Latency
+
+Memory usage
+
+Recall@K
+
+MRR
+
+Cost
+
+Experiment 4 — Retrieval Depth
+
+Compare:
+
+K = 1
+K = 3
+K = 5
+K = 10
+
+Experiment 5 — Reranking
+
+Vector Search
+      │
+      ▼
+   Reranker
+      │
+      ▼
+Top Results
+
+Compare reranked retrieval against the baseline vector-search approach.
+
+Experiment 6 — Hybrid Retrieval
+
+Compare:
+
+Dense Retrieval
+
+against:
+
+Dense + Keyword Retrieval
+
+Research Question
+
+The central research direction is:
+
+How do chunking strategies, embedding models, and retrieval configurations affect the accuracy and faithfulness of Retrieval-Augmented Generation systems for technical documents?
+
+Additional research questions include:
+
+How does chunk size affect retrieval quality in technical PDF documents?
+
+How does embedding model selection affect RAG performance?
+
+Does reranking significantly improve answer faithfulness?
+
+How does hybrid retrieval compare with dense retrieval for technical documents?
+
+What retrieval configuration provides the best accuracy-latency tradeoff?
+
+Evaluation Dataset
+
+The evaluation framework is designed around an initial dataset of approximately 50–100 questions covering:
+
+Factual questions
+
+Definition questions
+
+Comparison questions
+
+Multi-hop questions
+
+Numerical questions
+
+Ambiguous questions
+
+Questions with no answer in the documents
+
+Each evaluation example should contain:
+
+Question
+Expected Answer
+Relevant Document
+Relevant Page
+Relevant Chunk
+
+Error Analysis
+
+Evaluation should not stop at aggregate metrics.
+
+The project also investigates failure cases such as:
+
+Incorrect chunk retrieval
+
+Relevant chunk ranked too low
+
+Multi-chunk reasoning failures
+
+LLM ignoring retrieved context
+
+Unsupported citations
+
+PDF extraction failures
+
+Tables and structured content
+
+Long-context questions
+
+Insufficient-evidence detection failures
+
+Production Engineering
+
+The final system is designed to include:
+
+RESTful API
+
+Input validation
+
+Configuration management
+
+Structured logging
+
+Unit tests
+
+Integration tests
+
+Docker
+
+Docker Compose
+
+CI/CD
+
+API documentation
+
+Environment-based secrets
+
+Latency monitoring
+
+Retrieval observability
+
+Example environment variables:
+
+LLM_API_KEY=
+QDRANT_URL=
+QDRANT_API_KEY=
+DATABASE_URL=
+
+.env files and secrets should never be committed to the repository. Use .env.example for documented configuration.
+
+Docker Architecture
+
+The target deployment architecture is:
+
 Docker Compose
 
 ├── backend
 ├── frontend
 ├── qdrant
 └── database
-```
 
----
+The application will be containerized so the main services can be started consistently across development and deployment environments.
 
-# 10.2 Dockerfile
+Development Roadmap
 
-Build backend:
+The project is being developed through ten progressive phases:
 
-```text
-Python
- ↓
-Dependencies
- ↓
-FastAPI
- ↓
-Application
-```
+Phase
 
----
+Focus
 
-# 10.3 Environment variables
+0
 
-Never commit API keys.
+Planning & Environment
 
-Use:
+1
 
-```text
-.env
-```
+PDF Processing
 
-Example:
+2
 
-```env
-LLM_API_KEY=
-QDRANT_URL=
-QDRANT_API_KEY=
-DATABASE_URL=
-```
+Chunking Pipeline
 
-Commit:
+3
 
-```text
-.env.example
-```
-
-but never:
-
-```text
-.env
-```
-
----
-
-# 10.4 Logging
-
-Log:
-
-```text
-document upload
-processing time
-chunk count
-embedding latency
-retrieval latency
-LLM latency
-total request latency
-errors
-```
-
-Example:
-
-```text
-INFO document_processed
-document_id=123
-pages=42
-chunks=387
-processing_time=4.21s
-```
-
----
-
-# 10.5 Observability
-
-Track:
-
-```text
-retrieval latency
-LLM latency
-total latency
-tokens
-cost
-retrieval scores
-```
-
-This allows proper system analysis.
-
----
-
-# 10.6 Testing
-
-Implement:
-
-## Unit tests
-
-Test:
-
-```text
-PDF extraction
-cleaning
-chunking
-embedding
-retrieval
-prompt construction
-```
-
----
-
-## Integration tests
-
-Test:
-
-```text
-PDF
- ↓
-ingestion
- ↓
-chunking
- ↓
-embedding
- ↓
-Qdrant
- ↓
-retrieval
- ↓
-LLM
-```
-
----
-
-# 11. Development Workflow
-
-Do not build everything at once.
-
-Use this progression:
-
-```text
-Week 1
-Environment + architecture
-
-Week 2
-PDF processing
-
-Week 3
-Chunking
-
-Week 4
 Embeddings
 
-Week 5
-Vector database
+4
 
-Week 6
+Vector Database
+
+5
+
 Retrieval
 
-Week 7
-RAG generation
+6
 
-Week 8
-Citations + conversations
+RAG Generation
 
-Week 9–11
+7
+
+Citations & Conversations
+
+8
+
+Evaluation & Research
+
+9
+
+Production API & UI
+
+10
+
+Docker, Deployment & Portfolio
+
+Current focus: Phase 10 — Docker, Deployment & Portfolio.
+
+The project intentionally evolves from:
+
+Working MVP
+     ↓
+Strong RAG System
+     ↓
+Research + Production System
+
+Learning Objectives
+
+The project is also used as a structured learning vehicle for:
+
+NLP
+
+Tokenization
+
+TF-IDF
+
+BM25
+
+Word embeddings
+
+Contextual embeddings
+
+Transformers
+
+Attention
+
+Information Retrieval
+
+Inverted indexes
+
+Sparse retrieval
+
+Dense retrieval
+
+Vector similarity
+
+Ranking
+
+Precision
+
+Recall
+
+MRR
+
+Machine Learning
+
+Vectors and matrices
+
+Optimization
+
+Probability
+
+Similarity
+
+Classification
+
 Evaluation
 
-Week 12–13
-Experiments
+Deep Learning
 
-Week 14
-FastAPI
+Neural networks
 
-Week 15
-Frontend
+Backpropagation
 
-Week 16
-Docker
+Transformers
 
-Week 17
-Deployment
+Attention
 
-Week 18
-Documentation + paper
-```
+Encoder/decoder architectures
 
-This is approximately an 18-week roadmap.
+LLMs
 
----
+Tokenization
 
-# 12. What You Should Study Alongside the Project
+Context windows
 
-Do not blindly copy RAG tutorials.
+Prompting
 
-Study the concepts behind every component.
+Temperature
 
----
+Hallucination
 
-## NLP
+Instruction tuning
 
-Study:
+Embeddings
 
-* tokenization
-* TF-IDF
-* BM25
-* word embeddings
-* contextual embeddings
-* transformers
-* attention
+Engineering Principles
 
----
+The project follows several principles:
 
-## Information Retrieval
+1. Understand before abstracting
 
-Study:
+Core RAG components are implemented and understood before relying heavily on high-level frameworks.
 
-* inverted index
-* TF-IDF
-* BM25
-* dense retrieval
-* vector similarity
-* cosine similarity
-* precision
-* recall
-* MRR
-* ranking
+2. Measure before optimizing
 
----
+Changes to chunking, embeddings, retrieval, and reranking should be evaluated quantitatively.
 
-## Machine Learning
+3. Preserve source traceability
 
-Study:
+Document metadata is retained throughout the pipeline so generated answers can be connected back to their sources.
 
-* vectors
-* matrices
-* optimization
-* probability
-* similarity
-* classification
-* evaluation
+4. Separate components
 
----
+Embeddings, retrieval, generation, configuration, and API layers are designed behind clear interfaces.
 
-## Deep Learning
+5. Build progressively
 
-Study:
+The system is developed phase-by-phase rather than copying a complete RAG tutorial.
 
-* neural networks
-* backpropagation
-* transformers
-* attention
-* encoder/decoder architecture
+Example Git Workflow
 
----
+Meaningful commits are preferred:
 
-## LLMs
-
-Study:
-
-* tokenization
-* context window
-* prompting
-* temperature
-* hallucination
-* instruction tuning
-* embeddings
-
----
-
-# 13. Git Strategy
-
-Use meaningful commits.
-
-Bad:
-
-```text
-update
-fix
-changes
-test
-```
-
-Good:
-
-```text
 feat: add pdf text extraction
 feat: implement recursive chunking
 feat: add embedding service
@@ -1982,639 +872,78 @@ feat: add retrieval evaluation
 feat: add reranking experiment
 test: add ingestion pipeline tests
 docs: document retrieval experiments
-```
 
----
+Project Status
 
-# 14. GitHub Repository
+Status: Active development
 
-Your README should contain:
+The project is being developed as a long-term AI engineering and research portfolio project. The final release will include the production API, user interface, evaluation results, experiments, containerized deployment, documentation, and portfolio materials.
 
-```text
-# Intelligent PDF Knowledge Assistant
+Important: Performance metrics shown in planning examples are not project results. Final metrics will be reported only after running the corresponding experiments.
 
-## Overview
+Portfolio Deliverables
 
-## Architecture
+The completed project is intended to include:
 
-## Features
+Clean GitHub repository
 
-## Tech Stack
+Production-oriented architecture
 
-## Installation
+Working RAG application
 
-## Usage
+REST API
 
-## API
+User interface
 
-## Evaluation
+Evaluation dataset
 
-## Experiments
+Retrieval benchmarks
 
-## Results
+Generation evaluation
 
-## Limitations
+Error analysis
 
-## Future Work
+Research experiments
 
-## Research Question
+Results visualizations
 
-## License
-```
+Technical report
 
----
+Docker deployment
 
-# 15. README Architecture Diagram
+Project screenshots
 
-Include:
+Demonstration of the deployed system
 
-```text
-                ┌───────────────┐
-                │      User     │
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │    FastAPI    │
-                └───────┬───────┘
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-              ▼                   ▼
-       Document Pipeline       Query Pipeline
-              │                   │
-              ▼                   ▼
-          Chunking             Embedding
-              │                   │
-              ▼                   ▼
-         Embeddings          Vector Search
-              │                   │
-              └─────────┬─────────┘
-                        ▼
-                  Retrieved Context
-                        │
-                        ▼
-                       LLM
-                        │
-                        ▼
-                Answer + Citations
-```
+Future Work
 
----
+Potential extensions include:
 
-# 16. Final Research Report
+OCR for scanned PDFs
 
-At the end, create:
+Table extraction
 
-```text
-research_report.pdf
-```
+Multimodal RAG
 
-Suggested structure:
+Graph RAG
 
-## Abstract
+Improved hybrid retrieval
 
-Briefly explain the system and findings.
+Advanced rerankers
 
----
+Agentic retrieval
 
-## 1. Introduction
+Multilingual RAG
 
-Explain:
+Author
 
-* LLMs
-* hallucinations
-* RAG
-* motivation
+Amr Ashraf Ali
 
----
+Computer Engineering Student
+Cairo University
 
-## 2. Related Concepts
+GitHub: github.com/amrashraf15
 
-Discuss:
+License
 
-* information retrieval
-* embeddings
-* vector search
-* RAG
-
----
-
-## 3. System Architecture
-
-Explain every component.
-
----
-
-## 4. Methodology
-
-Describe:
-
-* datasets
-* chunking
-* embeddings
-* retrieval
-* LLM
-* evaluation
-
----
-
-## 5. Experiments
-
-Compare:
-
-```text
-chunk sizes
-embedding models
-top-k
-reranking
-hybrid retrieval
-```
-
----
-
-## 6. Results
-
-Use tables and graphs.
-
-Example:
-
-| Configuration | Recall@5 |  MRR | Faithfulness |
-| ------------- | -------: | ---: | -----------: |
-| 500 chunk     |     0.82 | 0.71 |         0.86 |
-| 800 chunk     |     0.87 | 0.76 |         0.89 |
-| 1000 chunk    |     0.84 | 0.74 |         0.87 |
-
-These numbers are examples only. Your actual experiments must produce the real values.
-
----
-
-## 7. Error Analysis
-
-Study failure cases.
-
-Examples:
-
-```text
-Wrong chunk retrieved
-
-Correct chunk ranked too low
-
-Question requires multiple chunks
-
-LLM ignored retrieved context
-
-Citation doesn't support claim
-
-Document contains tables
-
-PDF extraction failed
-```
-
-This section is extremely valuable.
-
----
-
-## 8. Limitations
-
-Be honest.
-
-Possible limitations:
-
-* scanned PDFs
-* tables
-* images
-* OCR
-* long-context questions
-* multilingual documents
-* retrieval failures
-* LLM hallucinations
-
----
-
-## 9. Future Work
-
-Possible improvements:
-
-* multimodal RAG
-* OCR
-* table extraction
-* graph RAG
-* hybrid retrieval
-* better rerankers
-* agentic retrieval
-* multilingual RAG
-
----
-
-# 17. Advanced Version
-
-After completing the baseline, consider:
-
-```text
-                   RAG SYSTEM
-                       │
-       ┌───────────────┼────────────────┐
-       │               │                │
-       ▼               ▼                ▼
-    Dense           Sparse           Hybrid
-  Retrieval        Retrieval        Retrieval
-       │               │                │
-       └───────────────┼────────────────┘
-                       ▼
-                    Reranker
-                       │
-                       ▼
-                 Context Builder
-                       │
-                       ▼
-                      LLM
-                       │
-            ┌──────────┴──────────┐
-            ▼                     ▼
-          Answer              Citations
-```
-
----
-
-# 18. Possible Advanced Research
-
-Once the baseline works, investigate:
-
-## Research Question 1
-
-> How does chunk size affect retrieval quality in technical PDF documents?
-
----
-
-## Research Question 2
-
-> How does embedding model selection affect RAG performance?
-
----
-
-## Research Question 3
-
-> Does reranking significantly improve answer faithfulness?
-
----
-
-## Research Question 4
-
-> How does hybrid retrieval compare with dense retrieval for technical documents?
-
----
-
-## Research Question 5
-
-> What retrieval configuration provides the best accuracy-latency tradeoff?
-
----
-
-# 19. Portfolio Presentation
-
-Your GitHub project should demonstrate three things.
-
-## Engineering
-
-```text
-Python
-FastAPI
-Qdrant
-Docker
-Testing
-API
-```
-
-## AI
-
-```text
-Embeddings
-Vector Search
-RAG
-LLMs
-Reranking
-Prompting
-```
-
-## Research
-
-```text
-Experiments
-Evaluation
-Metrics
-Error Analysis
-Ablation Studies
-```
-
-The combination is much stronger than simply saying:
-
-> "I built a chatbot using LangChain."
-
----
-
-# 20. CV Description
-
-After completing the project, a strong CV description could look like:
-
-**Intelligent PDF Knowledge Assistant — RAG / NLP / Information Retrieval**
-
-* Designed and implemented a Retrieval-Augmented Generation system for multi-document question answering using Python, FastAPI, Hugging Face embeddings, Qdrant, and LLMs.
-* Developed an end-to-end document ingestion pipeline with PDF extraction, configurable chunking, semantic embeddings, vector retrieval, contextual generation, and source-level citations.
-* Conducted controlled experiments comparing chunk sizes, embedding models, retrieval depth, and reranking strategies using Recall@K, Precision@K, MRR, faithfulness, and answer relevance metrics.
-* Investigated retrieval failures and hallucination cases through systematic error analysis and developed context-grounded response mechanisms to reduce unsupported answers.
-* Containerized the system using Docker and exposed document ingestion, retrieval, and conversational QA functionality through a RESTful FastAPI service.
-
-Use the actual metrics you obtain once the experiments are complete.
-
----
-
-# 21. Master's Application Value
-
-This project can demonstrate experience across several areas:
-
-```text
-Machine Learning
-       +
-Natural Language Processing
-       +
-Information Retrieval
-       +
-LLMs
-       +
-Software Engineering
-       +
-Research Methodology
-```
-
-For a research-oriented Master's application, the most valuable part is **not the UI**.
-
-The strongest evidence will be:
-
-```text
-1. Clear research question
-2. Reproducible experiments
-3. Evaluation dataset
-4. Quantitative metrics
-5. Baselines
-6. Ablation studies
-7. Error analysis
-8. Technical report
-9. Clean GitHub repository
-10. Working deployed system
-```
-
----
-
-# 22. Definition of Done
-
-The project is considered complete only when:
-
-## Core System
-
-* [ ] PDF upload works
-* [ ] PDF extraction works
-* [ ] Text cleaning works
-* [ ] Chunking works
-* [ ] Embeddings work
-* [ ] Qdrant works
-* [ ] Semantic search works
-* [ ] LLM generation works
-* [ ] Citations work
-
-## Advanced RAG
-
-* [ ] Multiple documents
-* [ ] Conversation history
-* [ ] Metadata filtering
-* [ ] Configurable top-k
-* [ ] Similarity threshold
-* [ ] Reranking
-* [ ] Hybrid retrieval
-
-## Evaluation
-
-* [ ] Evaluation dataset
-* [ ] Recall@K
-* [ ] Precision@K
-* [ ] MRR
-* [ ] Hit Rate
-* [ ] Faithfulness
-* [ ] Answer relevance
-* [ ] Citation evaluation
-* [ ] Hallucination tests
-
-## Research
-
-* [ ] Chunk-size experiment
-* [ ] Embedding experiment
-* [ ] Top-k experiment
-* [ ] Reranking experiment
-* [ ] Hybrid retrieval experiment
-* [ ] Error analysis
-* [ ] Results visualization
-* [ ] Research report
-
-## Engineering
-
-* [ ] FastAPI
-* [ ] Tests
-* [ ] Logging
-* [ ] Configuration
-* [ ] Docker
-* [ ] Docker Compose
-* [ ] CI/CD
-* [ ] Documentation
-
-## Portfolio
-
-* [ ] Clean GitHub repository
-* [ ] Architecture diagram
-* [ ] README
-* [ ] Demo
-* [ ] Technical report
-* [ ] Research results
-* [ ] CV entry
-* [ ] Project screenshots
-
----
-
-# 23. Most Important Rule
-
-Do **not** start by installing LangChain and copying a tutorial.
-
-Build the system progressively.
-
-The learning path should be:
-
-```text
-PDF
- ↓
-Text
- ↓
-Chunks
- ↓
-Embeddings
- ↓
-Vector Search
- ↓
-Retrieval
- ↓
-LLM
- ↓
-RAG
- ↓
-Citations
- ↓
-Evaluation
- ↓
-Experiments
- ↓
-Production System
-```
-
-You should understand every arrow in this diagram.
-
----
-
-# 24. Final Architecture
-
-The completed project should look approximately like:
-
-```text
-                           USER
-                            │
-              ┌─────────────┴─────────────┐
-              │                           │
-         Upload PDFs                 Ask Question
-              │                           │
-              ▼                           ▼
-       Document Pipeline            Query Pipeline
-              │                           │
-         PDF Extraction               Query Embed
-              │                           │
-          Cleaning                        │
-              │                           │
-          Chunking                        │
-              │                           │
-          Embeddings                      │
-              │                           │
-              ▼                           ▼
-        ┌──────────────────────────────────────┐
-        │              QDRANT                  │
-        │                                      │
-        │  vectors + metadata + source text    │
-        └──────────────────┬───────────────────┘
-                           │
-                           ▼
-                      Retrieval
-                           │
-                           ▼
-                       Reranking
-                           │
-                           ▼
-                    Context Builder
-                           │
-                           ▼
-                          LLM
-                           │
-                 ┌─────────┴─────────┐
-                 │                   │
-                 ▼                   ▼
-               Answer             Sources
-                 │                   │
-                 └─────────┬─────────┘
-                           ▼
-                      Final Response
-```
-
----
-
-# 25. Recommended Starting Point
-
-Do not implement Phase 1–10 simultaneously.
-
-Start with exactly this:
-
-```text
-Phase 0
-   ↓
-Create repository
-   ↓
-Create virtual environment
-   ↓
-Create project structure
-   ↓
-Install dependencies
-   ↓
-Create FastAPI hello-world
-   ↓
-Commit to Git
-   ↓
-Phase 1
-```
-
-Then build the PDF processor.
-
-The first milestone should simply be:
-
-```bash
-python scripts/ingest.py example.pdf
-```
-
-and:
-
-```text
-PDF processed successfully
-
-Document ID: doc_001
-Pages: 27
-Characters: 91,432
-```
-
-Once that works reliably, move to chunking.
-
----
-
-# 26. Project Philosophy
-
-The project should evolve through three stages:
-
-```text
-                    ┌─────────────────┐
-                    │   Stage 1       │
-                    │   Working MVP   │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │   Stage 2       │
-                    │   Strong RAG    │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │   Stage 3       │
-                    │ Research +      │
-                    │ Production      │
-                    └─────────────────┘
-```
-
-### Stage 1
-
-Make it work.
-
-### Stage 2
-
-Make retrieval and generation good.
-
-### Stage 3
-
-Measure it, experiment with it, explain failures, and deploy it.
-
-**Stage 3 is what makes this project valuable for a research-oriented Master's application.**
-
----
-
-# END OF PROJECT PLAN
-
+This project is intended as an educational, engineering, and research portfolio project. Add the project's chosen open-source license here once finalized.
