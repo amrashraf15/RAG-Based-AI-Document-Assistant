@@ -30,6 +30,18 @@ class Settings(BaseSettings):
     qdrant_api_key: str | None = None
     qdrant_timeout: float = 30.0
 
+    reranker_provider: str = "sentence_transformers"
+
+    reranker_model: str = (
+        "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    )
+
+    reranker_device: str | None = None
+
+    reranker_batch_size: int = 16
+
+    reranker_candidate_k: int = 20
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
