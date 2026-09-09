@@ -28,6 +28,10 @@ class EmbeddingModel(ABC):
         """
         raise NotImplementedError
 
+    @property
+    def normalized(self) -> bool:
+        return True
+
     @abstractmethod
     def embed_documents(
         self,

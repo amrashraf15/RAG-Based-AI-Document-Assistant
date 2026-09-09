@@ -28,6 +28,11 @@ data/processed/*
 
 # Keep directories
 !data/uploads/.gitkeep
+data/qdrant/*
+!data/processed/.gitkeep
+# Keep directory placeholders
+!data/uploads/.gitkeep
+!data/qdrant/.gitkeep
 !data/processed/.gitkeep
 
 # Logs

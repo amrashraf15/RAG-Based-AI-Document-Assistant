@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     embedding_batch_size: int = 32
     normalize_embeddings: bool = True
 
+    # Qdrant configuration
+    qdrant_collection_name: str = "document_chunks"
+    qdrant_path: Path = Path("data/qdrant")
+    qdrant_url: str | None = None
+    qdrant_api_key: str | None = None
+    qdrant_timeout: float = 30.0
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -39,6 +46,10 @@ class Settings(BaseSettings):
             exist_ok=True,
         )
         self.processed_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+        self.qdrant_path.mkdir(
             parents=True,
             exist_ok=True,
         )

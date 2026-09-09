@@ -80,7 +80,9 @@ class EmbeddingPipeline:
                     embedding_dimension=(
                         self.embedding_model.dimension
                     ),
-                    normalized=True,
+                    normalized=(
+                        self.embedding_model.normalized
+                    ),
                 )
             )
 

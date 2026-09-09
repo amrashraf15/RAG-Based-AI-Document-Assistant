@@ -60,6 +60,10 @@ class HuggingFaceEmbeddingModel(
     def dimension(self) -> int:
         return int(self._dimension)
 
+    @property
+    def normalized(self) -> bool:
+        return self.normalize_embeddings
+
     def embed_documents(
         self,
         texts: Sequence[str],
