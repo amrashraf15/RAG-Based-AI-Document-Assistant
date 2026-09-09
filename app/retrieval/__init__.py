@@ -1,3 +1,9 @@
+from app.retrieval.bm25 import BM25
+from app.retrieval.hybrid import HybridRetriever
+from app.retrieval.lexical_index import (
+    LexicalIndexBuilder,
+)
+from app.retrieval.lexical_store import LexicalStore
 from app.retrieval.qdrant_store import (
     QdrantVectorStore,
 )
@@ -27,4 +33,8 @@ __all__ = [
     "SentenceTransformerReranker",
     "RerankingPipeline",
     "create_reranker",
+    "BM25",
+    "LexicalStore",
+    "LexicalIndexBuilder",
+    "HybridRetriever",
 ]
